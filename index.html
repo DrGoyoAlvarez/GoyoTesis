@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente de Tesis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            height: 100vh;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        .menu {
+            margin-top: 20px;
+        }
+        .menu-item, .submenu-item {
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .menu-item:hover, .submenu-item:hover {
+            text-decoration: underline;
+        }
+        .submenu {
+            margin-left: 15px;
+        }
+        .chat {
+            border: 1px solid #ccc;
+            padding: 15px;
+            height: 400px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+        }
+        .input-container {
+            display: flex;
+        }
+        .input-container input {
+            flex: 1;
+            padding: 10px;
+            margin-right: 10px;
+        }
+        .input-container button {
+            padding: 10px;
+        }
+        .input-container input:disabled {
+            background-color: #eee;
+        }
+        .header-input {
+            margin-bottom: 10px;
+        }
+        .advisor-name {
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="advisor-name">
+            Dr. Goyo Alvarez Alvarez <br>(asesor y revisor de investigaciones)
+        </div>
+        <div class="header-input">
+            <label for="codigo">Código:</label><br>
+            <input type="text" id="codigo"><br><br>
+        </div>
+        <div class="header-input">
+            <label for="nombreInvestigador">Nombre del investigador:</label><br>
+            <input type="text" id="nombreInvestigador"><br><br>
+        </div>
+        <div class="header-input">
+            <label for="nombreInvestigacion">Nombre de la investigación:</label><br>
+            <input type="text" id="nombreInvestigacion"><br><br>
+        </div>
+        <div class="menu">
+            <div class="menu-item" onclick="toggleSubmenu('planTesisSubmenu')">1. Plan de Tesis</div>
+            <div id="planTesisSubmenu" class="submenu" style="display: none;">
+                <div class="submenu-item" onclick="startSection('1.1 Título')">1.1 Título</div>
+                <div class="submenu-item" onclick="startSection('1.2 Problema')">1.2 Problema</div>
+                <div class="submenu-item" onclick="startSection('1.3 Estado del Arte')">1.3 Estado del Arte</div>
+                <div class="submenu-item" onclick="startSection('1.4 Objetivos')">1.4 Objetivos</div>
+                <div class="submenu-item" onclick="startSection('1.5 Hipótesis')">1.5 Hipótesis</div>
+                <div class="submenu-item" onclick="startSection('1.6 Indicadores')">1.6 Indicadores</div>
+                <div class="submenu-item" onclick="startSection('1.7 Metodología')">1.7 Metodología</div>
+                <div class="submenu-item" onclick="startSection('1.8 Presupuesto y Cronograma')">1.8 Presupuesto y Cronograma</div>
+            </div>
+            <div class="menu-item" onclick="toggleSubmenu('tesisSubmenu')">2. Tesis</div>
+            <div id="tesisSubmenu" class="submenu" style="display: none;">
+                <div class="submenu-item" onclick="startSection('2.1 Título')">2.1 Título</div>
+                <div class="submenu-item" onclick="startSection('2.2 Problema')">2.2 Problema</div>
+                <div class="submenu-item" onclick="startSection('2.3 Indicadores')">2.3 Indicadores</div>
+                <div class="submenu-item" onclick="startSection('2.4 Justificación')">2.4 Justificación</div>
+                <div class="submenu-item" onclick="startSection('2.5 Estado del Arte')">2.5 Estado del Arte</div>
+                <div class="submenu-item" onclick="startSection('2.6 Marco Teórico')">2.6 Marco Teórico</div>
+                <div class="submenu-item" onclick="startSection('2.7 Metodología')">2.7 Metodología</div>
+                <div class="submenu-item" onclick="startSection('2.8 Desarrollo de la solución')">2.8 Desarrollo de la solución</div>
+                <div class="submenu-item" onclick="startSection('2.9 Análisis de resultados')">2.9 Análisis de resultados</div>
+                <div class="submenu-item" onclick="startSection('2.10 Conclusiones y recomendaciones')">2.10 Conclusiones y recomendaciones</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="chat" id="chat"></div>
+        <div class="input-container">
+            <input type="text" id="chatInput" placeholder="Escribe tu consulta aquí" disabled>
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = '';
+
+        function toggleSubmenu(submenuId) {
+            const submenu = document.getElementById(submenuId);
+            submenu.style.display = submenu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function startSection(section) {
+            let codigo = document.getElementById("codigo").value;
+            let nombreInvestigador = document.getElementById("nombreInvestigador").value;
+            let nombreInvestigacion = document.getElementById("nombreInvestigacion").value;
+
+            if (codigo && nombreInvestigador && nombreInvestigacion) {
+                currentSection = section;
+                document.getElementById("chatInput").disabled = false;
+                document.getElementById("chatInput").placeholder = `Escribe tu consulta sobre ${section} aquí...`;
+            } else {
+                alert("Por favor, completa los datos de Código, Nombre del Investigador y Nombre de la Investigación antes de continuar.");
+            }
+        }
+
+        function sendMessage() {
+            let chatInput = document.getElementById("chatInput");
+            let message = chatInput.value.trim();
+
+            if (message) {
+                let codigo = document.getElementById("codigo").value;
+                let nombreInvestigador = document.getElementById("nombreInvestigador").value;
+                let nombreInvestigacion = document.getElementById("nombreInvestigacion").value;
+                let chat = document.getElementById("chat");
+
+                // Añadir mensaje al chat
+                let messageElement = document.createElement("div");
+                messageElement.textContent = `${currentSection}: ${message}`;
+                chat.appendChild(messageElement);
+                chatInput.value = "";
+
+                // Enviar datos a Google Sheets
+                sendToGoogleSheets(codigo, nombreInvestigador, nombreInvestigacion, `${currentSection}: ${message}`);
+            }
+        }
+
+        function sendToGoogleSheets(codigo, nombreInvestigador, nombreInvestigacion, message) {
+            let fecha = new Date();
+            let dia = fecha.getDate().toString().padStart(2, '0');
+            let mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+            let anio = fecha.getFullYear();
+            let horas = fecha.getHours().toString().padStart(2, '0');
+            let minutos = fecha.getMinutes().toString().padStart(2, '0');
+
+            let data = {
+                codigo: codigo,
+                investigador: nombreInvestigador,
+                investigacion: nombreInvestigacion,
+                mensaje: message,
+                fecha: `${dia}/${mes}/${anio}`,
+                hora: `${horas}:${minutos}`
+            };
+
+            fetch('https://script.google.com/macros/s/AKfycbxfrwvJ3Dcd5lXmqgYH6u2YSQ4XFLclMTkIDmxsZ3AVZ5b36eZZdNJUrYdmVRCSySNi/exec', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                console.log('Datos enviados a Google Sheets');
+            }).catch(error => {
+                console.error('Error al enviar los datos a Google Sheets:', error);
+            });
+        }
+    </script>
+
+</body>
+</html>
